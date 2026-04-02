@@ -55,7 +55,8 @@ It focuses on data cleaning, transformation, and visualization to uncover insigh
 * Improve data filtering and accuracy
 * Interactive dashboards (Shiny / Tableau)
 
-## 👤 Author: Hamad Bashir
+## 👤 Author:
+Hamad Bashir
 
 Your Name
 
