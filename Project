@@ -1,0 +1,98 @@
+install.packages("tidyverse")
+library(tidyverse)
+install.packages("ggplot2")
+library(ggplot2)
+install.packages("dplyr")
+library(dplyr)
+install.packages("magrittr")
+library(magrittr)
+library(lubridate)
+install.packages("ggrepel")
+library("ggrepel")
+install.packages("gggenes")
+library(gggenes)
+
+data <- read.csv('big_tech_stock_prices.csv')
+colnames(data)
+data2 <- read.csv("big_tech_companies.csv")
+colnames(data2)
+
+joined_data <- left_join(data,data2,by="stock_symbol")
+
+
+class(joined_data$date)
+joined_data$date <- dmy(joined_data$date)
+class(joined_data$date)
+
+year <- format(joined_data$date, format="%Y")
+joined_data <- cbind(joined_data,year)
+
+mean_stock <- (joined_data$open+
+                 joined_data$close+
+                 joined_data$high+
+                 joined_data$low)/4
+joined_data <- cbind(joined_data,mean_stock)
+
+
+#line graph
+plot1 <- joined_data %>%
+  ggplot(aes(x=date, y=mean_stock, color=company)) + 
+  geom_line()+
+  labs(
+  x="Year" ,
+  y="Stock Price",
+  title="Stock Prices of Tech Giants over the years")
+
+
+#Boxplot
+mean_high_low <- (joined_data$high+joined_data$low)/2
+joined_data <- cbind(joined_data,mean_high_low)
+
+df1 <- c('Apple Inc.','Adobe Inc.','Amazon.com, Inc.','Salesforce, Inc.')
+
+
+company_4 <- filter(joined_data, joined_data$company == df1)
+joined_data_company4 <- cbind(company_4)
+
+
+plot4 <- ggplot(joined_data_company4, aes(x=year, y=mean_high_low, fill=company)) +
+  geom_boxplot() + facet_wrap(~company, scale="free") +
+labs(
+  x="Year" ,
+  y="High & Low Prices",
+  title="High & Low Stock Price of 4 Major Tech Companies over time")
+
+#scatter plot
+
+df1 <- c('Apple Inc.','Adobe Inc.','Amazon.com, Inc.','Salesforce, Inc.')
+
+
+company_4 <- filter(joined_data, joined_data$company == df1)
+joined_data_company4 <- cbind(company_4)
+
+apple_data <- filter(joined_data, joined_data$company == 'df1')
+plot3 <- ggplot(data = joined_data_company4, 
+                mapping = aes(x = mean_stock,
+                              y = volume,
+                              size=company,
+                              fill=company)) +
+  geom_point(shape = 21,  colour='black') +
+  labs(
+    x="Stock Price" ,
+    y="Volume",
+    title="Big4 Tech Companies Stock Price vs their Volume")
+#new one
+#volume
+install.packages("plotrix")
+library(plotrix)
+#company
+
+pie3D(joined_data,lebels=company,explode+0.1,main="pie chart of companies")
+
+plot1 <- ggplot(joined_data, aes(volume, labels = company,main="pie chart of contries"))+
+  geom_line()
+
+
+
+joined_data %>% ggplot(aes(x=date,y=volume,fill=stock_symbol))+
+  geom_area(stat = "identity") 
